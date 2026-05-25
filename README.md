@@ -1,6 +1,7 @@
 # CourseHub — Learning Dashboard
 
-A student dashboard built with Next.js App Router, Supabase, Tailwind CSS, and Framer Motion.
+A student dashboard built with Next.js App Router, Supabase, Tailwind CSS, and Framer Motion. 
+### link - https://coursehub-snowy.vercel.app/
 
 ---
 
