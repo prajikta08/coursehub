@@ -22,7 +22,7 @@ export default function Sidebar() {
       className="hidden md:flex flex-col h-full relative flex-shrink-0"
       style={{ background: "#1e1e1e", borderRight: "1px solid rgba(255,255,255,0.08)" }}
     >
-      {/* Logo */}
+     
       <div className="flex items-center gap-3 px-4 pt-6 pb-8 overflow-hidden">
         
         <AnimatePresence>
@@ -37,7 +37,6 @@ export default function Sidebar() {
         </AnimatePresence>
       </div>
 
-      {/* Search */}
       <AnimatePresence>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mx-3 mb-6">
@@ -85,7 +84,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom */}
+     
       <div className="p-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="flex items-center gap-2" style={{ justifyContent: collapsed ? "center" : "space-between" }}>
           {!collapsed && (
@@ -101,7 +100,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Collapse toggle */}
+     
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="absolute -right-3 top-8 w-6 h-6 rounded-full flex items-center justify-center"

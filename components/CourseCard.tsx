@@ -5,6 +5,11 @@ import { useRef } from "react";
 import * as LucideIcons from "lucide-react";
 import type { Course } from "@/lib/supabase";
 
+interface CourseCardProps {
+  course: Course;
+  index: number;
+}
+
 function ProgressBar({ value }: { value: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
@@ -22,14 +27,14 @@ function ProgressBar({ value }: { value: number }) {
   );
 }
 
-export default function CourseCard({ course, index }: { course: Course; index: number }) {
+export default function CourseCard({ course, index }: CourseCardProps) {
   const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[course.icon_name] ?? LucideIcons.BookOpen;
 
   return (
     <motion.article
       className="rounded-2xl p-5 flex flex-col gap-3"
       style={{ background: "var(--bg-card)", border: "1px solid rgba(255,255,255,0.08)" }}
-      whileHover={{ scale: 1.018 }}
+      whileHover={{ scale: 1.018, borderColor: "rgba(255,255,255,0.2)" }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <Icon size={18} color="#f0f0f0" strokeWidth={1.75} />

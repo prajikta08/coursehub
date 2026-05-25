@@ -8,7 +8,6 @@ export interface Course {
   created_at: string;
 }
 
-// Mock fallback data used when Supabase env vars are not set
 export const MOCK_COURSES: Course[] = [
   {
     id: "1",
@@ -55,7 +54,7 @@ export async function fetchCourses(): Promise<{
   const client = createServerSupabaseClient();
 
   if (!client) {
-    // Gracefully fall back to mock data
+
     return { courses: MOCK_COURSES, error: null };
   }
 
