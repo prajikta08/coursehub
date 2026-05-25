@@ -1,6 +1,6 @@
-# Meridian — Learning Dashboard
+# CourseHub — Learning Dashboard
 
-A high-fidelity student dashboard built with Next.js App Router, Supabase, Tailwind CSS, and Framer Motion.
+A student dashboard built with Next.js App Router, Supabase, Tailwind CSS, and Framer Motion.
 
 ---
 
@@ -9,7 +9,6 @@ A high-fidelity student dashboard built with Next.js App Router, Supabase, Tailw
 ```bash
 npm install
 cp .env.example .env.local
-# fill in your Supabase credentials
 npm run dev
 ```
 
@@ -38,31 +37,47 @@ insert into courses (title, progress, icon_name) values
 
 ---
 
-## Architecture
+## Architectural Choices
 
-### Server / Client Split
+### Why App Router?
+Next.js App Router allows components to be Server Components by default. This means data fetching happens on the server with zero client-side waterfalls — the courses are fetched before the page reaches the browser.
 
-| File | Rendered on |
-|---|---|
-| `app/page.tsx` | Server — fetches courses via RSC |
-| `components/CourseGrid.tsx` | Client — Framer Motion stagger |
-| `components/CourseCard.tsx` | Client — hover springs, animated progress bars |
-| `components/Sidebar.tsx` | Client — collapse state, layoutId highlight |
-| `components/ActivityTile.tsx` | Client — generated graph, entrance animations |
-| `components/HeroTile.tsx` | Client — hover spring |
-| `components/StatsTile.tsx` | Client — hover spring |
+### Why Supabase?
+Supabase gives a hosted PostgreSQL database with a simple JS client. The `fetchCourses()` function runs server-side only, so API keys are never exposed to the client.
 
-`fetchCourses()` in `lib/supabase.ts` runs exclusively on the server and is called inside `<CoursesSection>`, an async Server Component wrapped in `<Suspense>`. Skeleton loaders appear during the async boundary.
+---
 
-### Animation Strategy
+## Server / Client Component Split
 
-- **Zero layout shift**: all animations use `transform` and `opacity` only.
-- **Spring physics**: every hover uses `type: "spring", stiffness: 300, damping: 20`.
-- **Stagger**: `BentoShell` staggers section entrances; `CourseGrid` staggers card entrances independently.
-- **Progress bars**: animated via `useInView` — bars only play when scrolled into view.
-- **Sidebar highlight**: `layoutId="nav-highlight"` for smooth shared-layout transitions.
+The core principle was: **fetch on the server, animate on the client.**
 
-### Responsive Breakpoints
+| File | Rendered on | Why |
+|---|---|---|
+| `app/page.tsx` | Server | Data fetching, layout |
+| `CoursesSection` (in page.tsx) | Server | Async Supabase fetch |
+| `components/CourseCard.tsx` | Client | Framer Motion animations |
+| `components/Sidebar.tsx` | Client | useState for collapse/active |
+| `components/ActivityTile.tsx` | Client | Deterministic graph generation |
+| `components/HeroTile.tsx` | Client | Hover spring animations |
+| `components/StatsTile.tsx` | Client | Hover spring animations |
+| `components/BentoShell.tsx` | Client | Staggered entrance animations |
+
+`<CoursesSection>` is wrapped in `<Suspense>` so skeleton loaders appear instantly while Supabase responds. If the database is unreachable, it falls back to mock data gracefully without crashing.
+
+---
+
+## Challenges
+
+**1. Hydration mismatch with Math.random()**
+The activity graph initially used `Math.random()` inside a component, which produced different values on the server and client causing a React hydration error. Fixed by moving to a deterministic pseudo-random function based on position index, computed once at module level.
+
+**2. Framer Motion with Server Components**
+Framer Motion requires `"use client"` — any component using it can't be a Server Component. The solution was to keep all data fetching in pure async Server Components and pass data down as props to Client Components for animation.
+
+
+---
+
+## Responsive Breakpoints
 
 - **Mobile < 768px**: bottom navigation bar; grid stacks to a single column.
 - **Tablet 768–1024px**: sidebar collapses to icon-only; grid uses 2 columns.
