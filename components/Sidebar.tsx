@@ -24,14 +24,14 @@ export default function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 pt-6 pb-8 overflow-hidden">
-        <Flame size={18} color="#f0f0f0" strokeWidth={2} className="flex-shrink-0" />
+        
         <AnimatePresence>
           {!collapsed && (
             <motion.span
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="text-sm font-bold uppercase tracking-widest" style={{ color: "#f0f0f0" }}
             >
-              Meridian
+              CourseHub
             </motion.span>
           )}
         </AnimatePresence>
